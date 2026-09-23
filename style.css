@@ -177,5 +177,5 @@
 
 /* Скрытые сообщения в ленте чата */
 #chat .mes.rs-hidden {
-    display: none;
+    display: none !important;
 }
