@@ -1,0 +1,106 @@
+#rolling_summary_settings .rs-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+#rolling_summary_settings .rs-number {
+    max-width: 120px;
+}
+
+#rolling_summary_settings .rs-buttons-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+}
+
+#rolling_summary_settings .rs-divider {
+    margin: 12px 0;
+    opacity: 0.3;
+}
+
+#rolling_summary_settings .rs-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+#rolling_summary_settings .rs-summary-meta {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+#rolling_summary_settings .rs-summary-meta.rs-over-limit {
+    color: #e06c75;
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-summary-box {
+    border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 6px;
+    padding: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#rolling_summary_settings .rs-summary-card {
+    position: relative;
+}
+
+#rolling_summary_settings .rs-summary-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 40px;
+}
+
+#rolling_summary_settings .rs-summary-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 8px;
+}
+
+#rolling_summary_settings .rs-edit-icon,
+#rolling_summary_settings .rs-delete-icon {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#rolling_summary_settings .rs-edit-icon:hover,
+#rolling_summary_settings .rs-delete-icon:hover {
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-summary-editor {
+    width: 100%;
+    resize: vertical;
+}
+
+#rolling_summary_settings .rs-editor-meta {
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin: 4px 0;
+}
+
+#rolling_summary_settings .rs-editor-meta.rs-over-limit {
+    color: #e06c75;
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-editor-actions {
+    display: flex;
+    gap: 6px;
+}
+
+#rolling_summary_settings .rs-placeholder {
+    opacity: 0.6;
+}
+
+/* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
+#chat .mes.rs-hidden {
+    display: none;
+}

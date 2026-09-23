@@ -1,0 +1,13 @@
+{
+    "display_name": "Rolling Summary",
+    "loading_order": 10,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "you",
+    "version": "1.0.0",
+    "homePage": "",
+    "auto_update": false,
+    "generate_interceptor": "rollingSummary_interceptGeneration"
+}
