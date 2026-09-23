@@ -87,8 +87,8 @@
 
 /* Жестко фиксируем ширину текста (API, Key, Model), чтобы все поля ввода под ними начинались идеально ровно по одной линии */
 #rolling_summary_settings #rs_custom_provider_panel .rs-row > label:not(.checkbox_label) {
-    flex: 0 0 35px; 
-    min-width: 35px;
+    flex: 0 0 15px; 
+    min-width: 15px;
     white-space: nowrap;
 }
 
