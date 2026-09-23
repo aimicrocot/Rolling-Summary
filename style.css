@@ -179,7 +179,7 @@
     display: none !important;
 }
 
-.rs-hidden,
+/* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
 #chat .mes.rs-hidden {
     display: none !important;
 }
