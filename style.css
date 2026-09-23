@@ -4,28 +4,34 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: flex-start; /* Подтягиваем текстовую подпись и инпут друг к другу */
+    gap: 8px;                    /* Компактный отступ между лейблом и инпутом */
+    margin-bottom: 6px;          /* Уменьшен вертикальный просвет между строками */
 }
 
 #rolling_summary_settings .rs-row > label:not(.checkbox_label) {
-    flex: 1 1 auto;
+    flex: 0 1 auto;              /* Лейбл не растягивает всё пустое пространство */
+    margin-bottom: 0;
 }
 
+/* Компактные боксы для ввода чисел */
 #rolling_summary_settings .rs-number {
-    max-width: 120px;
+    width: 65px !important;      /* Фиксированная удобная ширина для чисел */
+    max-width: 65px;
     flex: 0 0 auto;
+    text-align: center;
 }
 
-/* Ряды, где справа не число, а текстовое поле (API URL / Key / Model) —
-   тянем инпут на всю оставшуюся ширину, а не жмём его в 120px. */
-#rolling_summary_settings .rs-row .text_pole:not(.rs-number) {
-    flex: 1 1 auto;
-    max-width: none;
+/* Ряды с текстовыми полями (API URL / Key / Model) */
+#rolling_summary_settings .rs-row input.text_pole:not(.rs-number),
+#rolling_summary_settings .rs-row textarea.text_pole:not(.rs-number) {
+    flex: 1 1 auto;              /* Растягивается на остаток строки */
+    width: 100%;
+    min-width: 0;                /* Предотвращает выпадение элемента за пределы контейнера */
+    box-sizing: border-box;
 }
 
-/* ===== Чекбоксы: компактно, в строку с подписью, а не блоком во всю ширину ===== */
+/* ===== Чекбоксы ===== */
 
 #rolling_summary_settings .checkbox_label {
     display: inline-flex;
@@ -41,18 +47,16 @@
     margin: 0;
 }
 
-/* Строка с двумя чекбоксами (Auto-summarize / Auto-hide) — раскладываем в ряд
-   с переносом, а не растягиваем на всю ширину контейнера. */
 #rolling_summary_settings .rs-row:has(.checkbox_label) {
     justify-content: flex-start;
     flex-wrap: wrap;
-    column-gap: 20px;
+    column-gap: 16px;
 }
 
 /* Одиночный чекбокс "Custom provider" вне .rs-row */
 #rolling_summary_settings > .inline-drawer > .inline-drawer-content > .checkbox_label {
     display: inline-flex;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 /* ===== Остальные блоки ===== */
@@ -61,24 +65,23 @@
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
 #rolling_summary_settings .rs-divider {
-    margin: 14px 0;
+    margin: 10px 0;
     opacity: 0.3;
 }
 
-/* Панель кастомного провайдера: отделяем от чекбокса-переключателя сверху и
-   даём внутренний воздух, чтобы "API URL" не липла к "Custom provider". */
+/* Панель кастомного провайдера */
 #rolling_summary_settings #rs_custom_provider_panel {
-    margin-top: 10px;
-    padding: 10px 12px;
+    margin-top: 8px;
+    padding: 10px;
     border: 1px solid var(--SmartThemeBorderColor, #555);
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
 }
 
 #rolling_summary_settings #rs_custom_provider_panel .rs-row {
