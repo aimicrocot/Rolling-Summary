@@ -174,12 +174,6 @@
 #rolling_summary_settings .rs-placeholder {
     opacity: 0.6;
 }
-
-/* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
-#chat .mes.rs-hidden {
-    display: none;
-}
-
 /* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
 #chat .mes.rs-hidden {
     display: none !important;
