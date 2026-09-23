@@ -20,17 +20,17 @@
     max-width: 65px;
     flex: 0 0 auto;
     text-align: center;
-    margin: 0; /* Убираем возможные смещения */
+    margin: 0;
 }
 
 /* Ряды с текстовыми полями (API URL / Key / Model) */
 #rolling_summary_settings .rs-row input.text_pole:not(.rs-number),
 #rolling_summary_settings .rs-row textarea.text_pole:not(.rs-number) {
-    flex: 1 1 0%; /* '0%' жестко удерживает инпут в границах родителя, не давая уехать вправо */
+    flex: 1 1 0%;
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
-    margin: 0 !important; /* Убиваем скрытые отступы от других стилей SillyTavern, из-за которых бокс ехал */
+    margin: 0 !important;
 }
 
 /* ===== Чекбоксы ===== */
@@ -85,7 +85,7 @@
     gap: 6px;
 }
 
-/* Жестко фиксируем ширину текста (API, Key, Model), чтобы все поля ввода под ними начинались идеально ровно по одной линии */
+/* Фиксированная ширина меток уменьшена с 75px до 45px */
 #rolling_summary_settings #rs_custom_provider_panel .rs-row > label:not(.checkbox_label) {
     flex: 0 0 25px; 
     min-width: 25px;
@@ -174,12 +174,8 @@
 #rolling_summary_settings .rs-placeholder {
     opacity: 0.6;
 }
-/* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
-#chat .mes.rs-hidden {
-    display: none !important;
-}
 
-/* Скрытые (свёрнутые в саммари) сообщения в самой ленте чата */
+/* Скрытые сообщения в ленте чата */
 #chat .mes.rs-hidden {
-    display: none !important;
+    display: none;
 }
