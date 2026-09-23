@@ -289,7 +289,7 @@ async function sendCustomProviderRequest(userPrompt, systemPrompt) {
                     { role: "user", content: userPrompt }
                 ],
                 temperature: 0.3,
-                max_tokens: 2048
+                max_tokens: getSummaryTokenLimit()
             })
         });
     } catch (error) {
