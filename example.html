@@ -18,7 +18,7 @@
             </div>
 
             <div class="rs-row" id="rs_scan_interval_row" style="display:none;">
-                <label for="rs_scan_interval">Auto-scan every N new messages</label>
+                <label for="rs_scan_interval">Auto-scan every N messages</label>
                 <input id="rs_scan_interval" class="text_pole rs-number" type="number" min="1" step="1" />
             </div>
 
@@ -33,7 +33,7 @@
             </div>
 
             <div class="rs-row">
-                <label for="rs_chars_per_token">Characters per token (estimate)</label>
+                <label for="rs_chars_per_token">Characters per token</label>
                 <input id="rs_chars_per_token" class="text_pole rs-number" type="number" min="1" step="0.1" />
             </div>
 
@@ -47,7 +47,7 @@
 
             <label class="checkbox_label" for="rs_use_custom_provider">
                 <input id="rs_use_custom_provider" type="checkbox" />
-                <span>Use a separate (custom) summarizer provider</span>
+                <span>Custom provider</span>
             </label>
 
             <div id="rs_custom_provider_panel" style="display:none;">
@@ -63,7 +63,7 @@
                     <label for="rs_custom_api_model">Model</label>
                     <input id="rs_custom_api_model" class="text_pole" type="text" placeholder="gpt-4o-mini" />
                 </div>
-                <input id="rs_test_custom_provider" class="menu_button" type="button" value="Test connection" />
+                <input id="rs_test_custom_provider" class="menu_button" type="button" value="Test Connection" />
             </div>
 
             <hr class="rs-divider" />
