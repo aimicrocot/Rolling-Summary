@@ -4,31 +4,33 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start; /* Подтягиваем текстовую подпись и инпут друг к другу */
-    gap: 8px;                    /* Компактный отступ между лейблом и инпутом */
-    margin-bottom: 6px;          /* Уменьшен вертикальный просвет между строками */
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
 }
 
 #rolling_summary_settings .rs-row > label:not(.checkbox_label) {
-    flex: 0 1 auto;              /* Лейбл не растягивает всё пустое пространство */
+    flex: 0 1 auto;
     margin-bottom: 0;
 }
 
 /* Компактные боксы для ввода чисел */
 #rolling_summary_settings .rs-number {
-    width: 65px !important;      /* Фиксированная удобная ширина для чисел */
+    width: 65px !important;
     max-width: 65px;
     flex: 0 0 auto;
     text-align: center;
+    margin: 0; /* Убираем возможные смещения */
 }
 
 /* Ряды с текстовыми полями (API URL / Key / Model) */
 #rolling_summary_settings .rs-row input.text_pole:not(.rs-number),
 #rolling_summary_settings .rs-row textarea.text_pole:not(.rs-number) {
-    flex: 1 1 auto;              /* Растягивается на остаток строки */
+    flex: 1 1 0%; /* '0%' жестко удерживает инпут в границах родителя, не давая уехать вправо */
     width: 100%;
-    min-width: 0;                /* Предотвращает выпадение элемента за пределы контейнера */
+    min-width: 0;
     box-sizing: border-box;
+    margin: 0 !important; /* Убиваем скрытые отступы от других стилей SillyTavern, из-за которых бокс ехал */
 }
 
 /* ===== Чекбоксы ===== */
@@ -53,7 +55,6 @@
     column-gap: 16px;
 }
 
-/* Одиночный чекбокс "Custom provider" вне .rs-row */
 #rolling_summary_settings > .inline-drawer > .inline-drawer-content > .checkbox_label {
     display: inline-flex;
     margin-bottom: 8px;
@@ -82,6 +83,13 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+/* Жестко фиксируем ширину текста (API, Key, Model), чтобы все поля ввода под ними начинались идеально ровно по одной линии */
+#rolling_summary_settings #rs_custom_provider_panel .rs-row > label:not(.checkbox_label) {
+    flex: 0 0 75px; 
+    min-width: 75px;
+    white-space: nowrap;
 }
 
 #rolling_summary_settings #rs_custom_provider_panel .rs-row {
