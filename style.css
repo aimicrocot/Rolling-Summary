@@ -178,3 +178,8 @@
 #chat .mes.rs-hidden {
     display: none !important;
 }
+
+.rs-hidden,
+#chat .mes.rs-hidden {
+    display: none !important;
+}
