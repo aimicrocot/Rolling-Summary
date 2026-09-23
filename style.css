@@ -1,5 +1,181 @@
+/* ===== Базовая раскладка строк настроек ===== */
+
+#rolling_summary_settings .rs-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+#rolling_summary_settings .rs-row > label:not(.checkbox_label) {
+    flex: 0 1 auto;
+    margin-bottom: 0;
+}
+
+/* Компактные боксы для ввода чисел */
+#rolling_summary_settings .rs-number {
+    width: 65px !important;
+    max-width: 65px;
+    flex: 0 0 auto;
+    text-align: center;
+    margin: 0;
+}
+
+/* Ряды с текстовыми полями (API URL / Key / Model) */
+#rolling_summary_settings .rs-row input.text_pole:not(.rs-number),
+#rolling_summary_settings .rs-row textarea.text_pole:not(.rs-number) {
+    flex: 1 1 0%;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin: 0 !important;
+}
+
+/* ===== Чекбоксы ===== */
+
+#rolling_summary_settings .checkbox_label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: auto;
+    margin: 0;
+    cursor: pointer;
+}
+
+#rolling_summary_settings .checkbox_label input[type="checkbox"] {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+#rolling_summary_settings .rs-row:has(.checkbox_label) {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    column-gap: 16px;
+}
+
+#rolling_summary_settings > .inline-drawer > .inline-drawer-content > .checkbox_label {
+    display: inline-flex;
+    margin-bottom: 8px;
+}
+
+/* ===== Остальные блоки ===== */
+
+#rolling_summary_settings .rs-buttons-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+}
+
+#rolling_summary_settings .rs-divider {
+    margin: 10px 0;
+    opacity: 0.3;
+}
+
+/* Панель кастомного провайдера */
+#rolling_summary_settings #rs_custom_provider_panel {
+    margin-top: 8px;
+    padding: 10px;
+    border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Фиксированная ширина меток уменьшена с 75px до 45px */
 #rolling_summary_settings #rs_custom_provider_panel .rs-row > label:not(.checkbox_label) {
-    flex: 0 0 75px; 
-    min-width: 75px;
+    flex: 0 0 45px; 
+    min-width: 45px;
     white-space: nowrap;
+}
+
+#rolling_summary_settings #rs_custom_provider_panel .rs-row {
+    margin-bottom: 0;
+}
+
+#rolling_summary_settings .rs-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+#rolling_summary_settings .rs-summary-meta {
+    font-size: 0.85em;
+    opacity: 0.7;
+}
+
+#rolling_summary_settings .rs-summary-meta.rs-over-limit {
+    color: #e06c75;
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-summary-box {
+    border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 6px;
+    padding: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#rolling_summary_settings .rs-summary-card {
+    position: relative;
+}
+
+#rolling_summary_settings .rs-summary-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 40px;
+}
+
+#rolling_summary_settings .rs-summary-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 8px;
+}
+
+#rolling_summary_settings .rs-edit-icon,
+#rolling_summary_settings .rs-delete-icon {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+#rolling_summary_settings .rs-edit-icon:hover,
+#rolling_summary_settings .rs-delete-icon:hover {
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-summary-editor {
+    width: 100%;
+    resize: vertical;
+}
+
+#rolling_summary_settings .rs-editor-meta {
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin: 4px 0;
+}
+
+#rolling_summary_settings .rs-editor-meta.rs-over-limit {
+    color: #e06c75;
+    opacity: 1;
+}
+
+#rolling_summary_settings .rs-editor-actions {
+    display: flex;
+    gap: 6px;
+}
+
+#rolling_summary_settings .rs-placeholder {
+    opacity: 0.6;
+}
+
+/* Скрытые сообщения в ленте чата */
+#chat .mes.rs-hidden {
+    display: none;
 }
