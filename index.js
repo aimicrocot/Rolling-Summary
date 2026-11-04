@@ -350,16 +350,22 @@ async function callMainApi(promptText, systemPrompt) {
         throw new Error("В этой версии SillyTavern нет generateRaw — обновите SillyTavern");
     }
 
+    // Длина ответа берётся из пресета основного API (Response tokens). Если там стоит,
+    // скажем, 150, саммари обрывается на полуслове. Задаём свой лимит с запасом:
+    // промпт и так просит уложиться в summaryTokenLimit.
+    const responseLength = Math.max(getSummaryTokenLimit() * 4, 2000);
+
     // generateRaw не проходит через Generate(), поэтому свой же интерцептор
     // отсюда не вызывается и рекурсии нет.
     if (context.generateRaw.length > 1) {
-        return await context.generateRaw(promptText, null, false, false, systemPrompt);
+        return await context.generateRaw(promptText, null, false, false, systemPrompt, responseLength);
     }
     // Параметр называется systemPrompt — ключ `system` ядро молча игнорирует.
     return await context.generateRaw({
         prompt: promptText,
         quietToLoud: false,
-        systemPrompt: systemPrompt
+        systemPrompt: systemPrompt,
+        responseLength: responseLength
     });
 }
 
@@ -400,6 +406,12 @@ function extractMessageText(message) {
     return "";
 }
 
+const MAX_COMPLETION_BUDGET = 16000;
+
+function isTruncatedFinish(reason) {
+    return /^(length|max_tokens)$/i.test(String(reason ?? ""));
+}
+
 async function sendCustomProviderRequest(userPrompt, systemPrompt, signal) {
     const apiUrl = extension_settings[extensionName].customApiUrl;
     const apiKey = extension_settings[extensionName].customApiKey;
@@ -419,52 +431,61 @@ async function sendCustomProviderRequest(userPrompt, systemPrompt, signal) {
     const headers = { "Content-Type": "application/json" };
     if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
 
-    const body = {
-        model,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ],
-        temperature: 0.3,
-        // Небольшой запас: обрыв саммари на полуслове хуже лёгкого перебора.
-        max_tokens: Math.ceil(getSummaryTokenLimit() * 1.5)
-    };
+    const messages = [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+    ];
 
-    let response = await postJson(endpoint, headers, body, signal);
-
+    // Бюджет токенов. Reasoning-модели тратят его ещё и на рассуждения, поэтому при
+    // обрыве (finish_reason=length) запрос повторяется с бо́льшим бюджетом, а обрезанный
+    // текст никогда не принимается за саммари.
+    let budget = Math.ceil(getSummaryTokenLimit() * 1.5);
     // Новые модели (o-серия, gpt-5 и т.п.) не принимают max_tokens и temperature.
-    // Повторяем один раз в их формате.
-    if (!response.ok && (response.status === 400 || response.status === 422)) {
-        const errText = await response.text().catch(() => "");
-        if (/max_tokens|max_completion_tokens|temperature/i.test(errText)) {
-            const retryBody = { ...body };
-            delete retryBody.max_tokens;
-            delete retryBody.temperature;
-            // В max_completion_tokens входят и токены рассуждений — даём запас.
-            retryBody.max_completion_tokens = Math.max(body.max_tokens * 4, 4000);
-            response = await postJson(endpoint, headers, retryBody, signal);
-        } else {
+    let compat = false;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+        const body = compat
+            ? { model, messages, max_completion_tokens: budget }
+            : { model, messages, temperature: 0.3, max_tokens: budget };
+
+        const response = await postJson(endpoint, headers, body, signal);
+
+        if (!response.ok) {
+            const errText = await response.text().catch(() => "Unknown error");
+            if (!compat && (response.status === 400 || response.status === 422)
+                && /max_tokens|max_completion_tokens|temperature/i.test(errText)) {
+                compat = true;
+                // В max_completion_tokens входят и токены рассуждений — даём запас.
+                budget = Math.max(budget * 4, 4000);
+                continue;
+            }
             throw new Error(`Custom provider request failed (${response.status}): ${errText.substring(0, 300)}`);
         }
-    }
 
-    if (!response.ok) {
-        const errText = await response.text().catch(() => "Unknown error");
-        throw new Error(`Custom provider request failed (${response.status}): ${errText.substring(0, 300)}`);
-    }
+        const data = await response.json();
+        const choice = data?.choices?.[0];
+        // reasoning_content — это рассуждения модели, а не саммари: раньше они молча
+        // подставлялись вместо ответа и записывались в память.
+        const content = extractMessageText(choice?.message);
+        const finishReason = choice?.finish_reason;
 
-    const data = await response.json();
-    const choice = data?.choices?.[0];
-    // reasoning_content — это рассуждения модели, а не саммари: раньше они молча
-    // подставлялись вместо ответа и записывались в память.
-    const content = extractMessageText(choice?.message);
-    if (!content.trim()) {
-        if (choice?.finish_reason === "length") {
-            throw new Error("Пустой ответ: модель исчерпала лимит токенов (reasoning-модели тратят его на рассуждения)");
+        if (isTruncatedFinish(finishReason)) {
+            console.warn(`[${extensionName}] Ответ обрезан (finish_reason=${finishReason}, бюджет ${budget} токенов), получено: "${content.substring(0, 120)}"`);
+            if (attempt < 2 && budget < MAX_COMPLETION_BUDGET) {
+                budget = Math.min(Math.max(budget * 4, 4000), MAX_COMPLETION_BUDGET);
+                continue;
+            }
+            throw new Error(
+                "Ответ обрезан: модель исчерпала лимит токенов даже при увеличенном бюджете " +
+                "(reasoning-модели тратят его на рассуждения). Выберите модель без reasoning или увеличьте лимит."
+            );
         }
-        throw new Error("Custom provider returned empty response");
+
+        if (!content.trim()) throw new Error("Custom provider returned empty response");
+        return content;
     }
-    return content;
+
+    throw new Error("Custom provider: не удалось получить ответ после повторных попыток");
 }
 
 async function testCustomProviderConnection() {
@@ -539,15 +560,49 @@ async function scanMessages(messages, state, cancelSignal) {
     );
 
     const updated = cleanSummaryText(typeof response === "string" ? response : "");
-    if (updated.length > 5) {
+    console.log(`[${extensionName}] Ответ модели (${updated.length} симв.):`, updated.substring(0, 200));
+
+    const verdict = checkSummaryPlausible(updated, state.summary, messages);
+    if (verdict.ok) {
         state.summary = updated;
         return true;
     }
 
-    // Пустой/мусорный ответ не должен уничтожать уже накопленный саммари —
-    // курсор в этом случае не двигаем.
-    toastr.warning("Модель вернула пустой ответ — саммари не обновлён", "Rolling Summary");
+    // Пустой/обрезанный ответ не должен уничтожать уже накопленный саммари, а курсор
+    // не двигается: иначе эти сообщения навсегда считались бы «учтёнными».
+    const shown = updated ? `«${updated.substring(0, 60)}${updated.length > 60 ? "…" : ""}»` : "пустой ответ";
+    toastr.warning(
+        `${verdict.reason}: ${shown}. Саммари не изменено, сообщения будут обработаны при следующем скане.`,
+        "Rolling Summary",
+        { timeOut: 12000 }
+    );
     return false;
+}
+
+/**
+ * Отсеивает ответы, которые явно не являются саммари: пустые и оборванные на пару слов.
+ * Раньше планкой было «длиннее 5 символов», и обрезок вида «In the winterfell crypts»
+ * записывался как память, а все отсканированные сообщения помечались учтёнными.
+ */
+function checkSummaryPlausible(updated, existingSummary, messages) {
+    if (updated.length <= 5) return { ok: false, reason: "Модель вернула пустой ответ" };
+
+    const messagesChars = messages.reduce((sum, message) => sum + String(message.text ?? "").length, 0);
+    const charLimit = getSummaryCharLimit();
+
+    let minChars;
+    if (existingSummary.length >= 150) {
+        // Слияние не должно схлопывать накопленное саммари до обрывка.
+        minChars = Math.min(existingSummary.length, charLimit) * 0.4;
+    } else {
+        // Первое саммари: ждём хотя бы пару предложений, если материала достаточно.
+        minChars = Math.min(150, messagesChars * 0.05, charLimit * 0.3);
+    }
+
+    if (updated.length < minChars) {
+        return { ok: false, reason: "Ответ модели слишком короткий и, похоже, обрезан" };
+    }
+    return { ok: true, reason: "" };
 }
 
 // Индикатор состояния в панели: видно, что запрос идёт, сколько он уже длится,
