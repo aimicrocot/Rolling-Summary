@@ -37,11 +37,17 @@
                 <input id="rs_chars_per_token" class="text_pole rs-number" type="number" min="1" step="0.1" />
             </div>
 
+            <div class="rs-row">
+                <label for="rs_request_timeout">Request timeout (sec)</label>
+                <input id="rs_request_timeout" class="text_pole rs-number" type="number" min="10" step="10" />
+            </div>
+
             <div class="rs-buttons-row">
                 <input id="rs_manual_scan" class="menu_button" type="button" value="Scan" />
                 <input id="rs_toggle_hide" class="menu_button" type="button" value="Hide" />
                 <input id="rs_clear_summary" class="menu_button" type="button" value="Clear" />
             </div>
+            <div id="rs_status" class="rs-status"></div>
 
             <hr class="rs-divider" />
 

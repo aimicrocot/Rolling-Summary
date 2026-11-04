@@ -62,6 +62,17 @@
 
 /* ===== Остальные блоки ===== */
 
+/* Статус идущего запроса (пустой — не занимает места) */
+#rolling_summary_settings .rs-status {
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+#rolling_summary_settings .rs-status:empty {
+    display: none;
+}
+
 #rolling_summary_settings .rs-buttons-row {
     display: flex;
     gap: 6px;

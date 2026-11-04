@@ -5,9 +5,9 @@
     "optional": [],
     "js": "index.js",
     "css": "style.css",
-    "author": "you",
-    "version": "1.0.0",
-    "homePage": "",
+    "author": "aimicrocot",
+    "version": "1.0.1",
+    "homePage": "https://github.com/aimicrocot/Rolling-Summary",
     "auto_update": false,
     "generate_interceptor": "rollingSummary_interceptGeneration"
 }
